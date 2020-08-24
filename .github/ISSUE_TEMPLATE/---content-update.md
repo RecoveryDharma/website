@@ -35,6 +35,6 @@ Replace this with detailed information about the request. For new content, make 
 For changes, tell where and what should be changed. For deletions, tell what to delete and if redirections should be left behind.
 
 
-## 📈 Attachements
+## 📈 Attachments
 
 For new content, don't forget to attach the file you want uploaded to the portal. If it's just text, you can even paste or type it in right here.
