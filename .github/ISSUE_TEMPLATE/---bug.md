@@ -3,7 +3,6 @@ name: "\U0001F41B Bug"
 about: Report a Website Bug
 title: ''
 labels: "\U0001F41Bbug"
-assignees: nutjob4life
 
 ---
 

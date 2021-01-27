@@ -3,7 +3,6 @@ name: "\U0001F195 Feature Request"
 about: Suggest an idea for website feature
 title: ''
 labels: "\U0001F9D9‍♀️enhancement"
-assignees: nutjob4life
 
 ---
 
