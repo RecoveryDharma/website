@@ -3,6 +3,7 @@ name: "\U0001F4D7 Content Update"
 about: Request a change to our website's content
 title: ''
 labels: "\U0001F4DDcontent"
+assignees: tom-raley
 
 ---
 
