@@ -1,0 +1,21 @@
+{
+   "folders" : [
+      {
+         "file_exclude_patterns" : [
+            "*.sublime-*",
+            "*.py[cod]",
+            ".DS_Store"
+         ],
+         "folder_exclude_patterns" : [
+            ".idle",
+            "bin",
+            "dist",
+            "build",
+            "*.egg-info",
+            "__pycache__",
+            "venv"
+         ],
+         "path" : "."
+      }
+   ]
+}

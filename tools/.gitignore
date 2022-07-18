@@ -1,0 +1,14 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+*.egg-info/
+.*.cfg
+*.egg
+MANIFEST
+build/
+dist/
+build/
+*.sublime-workspace
+venv/
+*.csv
+typescript
