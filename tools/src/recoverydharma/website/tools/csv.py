@@ -3,7 +3,7 @@
 '''☸️ Recovery Dharma Website Tools: CSV generation.'''
 
 from . import VERSION
-import argparse, sys, csv, datetime
+import argparse, sys, csv, datetime, re
 
 
 _export_days = {
@@ -34,6 +34,8 @@ _kinds = {
     'Online (Soon to be Hybrid)': 'virtual'
 }
 
+_duration_parser = re.compile(r'(\d+)')  # Maybe we can do something more sophisticated?
+
 
 def _aware_now() -> datetime.datetime:
     '''Return the current time UTC in a timezone-aware object.'''
@@ -54,7 +56,7 @@ def _clean_up_name(name: str) -> str:
     return name
 
 
-def _compute_start(start: str, now: datetime.datetime) -> str:
+def _compute_start(start: str, now: datetime.datetime) -> datetime.datetime:
     '''Compute the next date a meeting should start.
 
     ``start`` contains a string like ``Mon 1:00 AM`` or ``Wed 4:45 PM``. We need to produce the next
@@ -80,11 +82,25 @@ def _compute_start(start: str, now: datetime.datetime) -> str:
     return datetime.datetime(meeting.year, meeting.month, meeting.day, h, m, 0, 0, meeting.tzinfo)
 
 
+def _compute_end(start: datetime.datetime, description: str) -> datetime.datetime:
+    '''Compute the end date/time of a meeting.
+
+    Based on the ``start`` time and some string ``description`` like ``40 minutes`` figure out an
+    end time.  Note the ``description`` in the RD spreadsheet is free text and may be unusable
+    to figure out a duration. Possible values I've seen include: ``120 minutes``, ``40 min.``,
+    ``40 minutes but we can add to it if necessary``, ``60``, etc.
+    '''
+    match = _duration_parser.match(description)
+    if not match: return None
+    minutes = int(match.group(1))
+    return start + datetime.timedelta(minutes=minutes)
+
+
 def _convert(input_file, output_file):
     reader, writer, now, count = csv.reader(input_file), csv.writer(output_file), _aware_now(), 0
     for (
         b0, b1, b2, utc, stat, kind, day, tod, tz, b3, name, url, mtgid, pwd, email, st, country, lang, city,
-        addr, aff, b4, b5, b6, b7
+        addr, aff, b4, b5, b6, duration
     ) in reader:
         # Skip header rows
         if b0.startswith('[RDG internal use only]') or b0.startswith('Got it, you want to CHANGE'): continue
@@ -93,14 +109,21 @@ def _convert(input_file, output_file):
         # Skip blank times
         if not utc: continue
 
-        name = _clean_up_name(name)
-        lang = _languages.get(lang, lang)
+        name  = _clean_up_name(name)
+        lang  = _languages.get(lang, lang)
         start = _compute_start(utc, now)
-        kind = _kinds.get(kind, kind)
-        desc = '🔮 TODO'
+        end   = _compute_end(start, duration)
+        kind  = _kinds.get(kind, kind)
+        desc  = f'For more information contact <a href="mailto:{email}">{email}</a>. (Note: this information automatically imported.)'
+
+        start_date, start_time = start.date().isoformat(), start.time().isoformat()
+        if end:
+            end_date, end_time = end.date().isoformat(), end.time().isoformat()
+        else:
+            end_date = end_time = ''
 
         writer.writerow((
-            name, desc, start.date().isoformat(), start.time().isoformat(), '', '', 'UTC', '', '', aff, kind,
+            name, desc, start_date, start_time, end_date, end_time, 'UTC', '', '', aff, kind,
             url, mtgid, pwd
         ))
         count += 1
