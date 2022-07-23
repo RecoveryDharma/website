@@ -114,7 +114,7 @@ def _convert(input_file, output_file):
         start = _compute_start(utc, now)
         end   = _compute_end(start, duration)
         kind  = _kinds.get(kind, kind)
-        desc  = f'For more information contact <a href="mailto:{email}">{email}</a>. (Note: this information automatically imported.)'
+        desc  = f'For more information contact {email}. (Note: this information automatically imported.)'
 
         start_date, start_time = start.date().isoformat(), start.time().isoformat()
         if end:
