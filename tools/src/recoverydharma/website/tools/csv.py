@@ -6,6 +6,12 @@ from . import VERSION
 import argparse, sys, csv, datetime, re
 
 
+_header_row = (
+    'Event Name', 'Event Description', 'Event Start Date', 'Event Start Time', 'Event End Date', 'Event End Time',
+    'Event Time Zone*', 'Event Venue Name', 'Event Organizer', 'Event Category', 'Type of Event (Virtual/Hybrid)',
+    'Link', 'ID', 'Password'
+)
+
 _export_days = {
     'Mon': 0,
     'Tue': 1,
@@ -98,6 +104,10 @@ def _compute_end(start: datetime.datetime, description: str) -> datetime.datetim
 
 def _convert(input_file, output_file):
     reader, writer, now, count = csv.reader(input_file), csv.writer(output_file), _aware_now(), 0
+
+    # Output the header row
+    writer.writerow(_header_row)
+
     for (
         b0, b1, b2, utc, stat, kind, day, tod, tz, b3, name, url, mtgid, pwd, email, st, country, lang, city,
         addr, aff, b4, b5, b6, duration
